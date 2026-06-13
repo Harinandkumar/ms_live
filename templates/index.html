@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        MS Lesion Segmentation Dashboard
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <h2>
+            MS AI Dashboard
+        </h2>
+
+        <ul>
+
+            <li onclick="showSection('home')">
+                🏠 Home
+            </li>
+
+            <li onclick="showSection('evaluation')">
+                📊 Evaluation of Model
+            </li>
+
+        </ul>
+
+        <div class="metrics-panel">
+
+            <h3>
+                Live Metrics
+            </h3>
+
+            <div class="metric-box">
+                <span>Dice</span>
+                <strong>{{ metrics.dice }}</strong>
+            </div>
+
+            <div class="metric-box">
+                <span>Accuracy</span>
+                <strong>{{ metrics.accuracy }}</strong>
+            </div>
+
+            <div class="metric-box">
+                <span>F1</span>
+                <strong>{{ metrics.f1 }}</strong>
+            </div>
+
+            <div class="metric-box">
+                <span>Precision</span>
+                <strong>{{ metrics.precision }}</strong>
+            </div>
+
+            <div class="metric-box">
+                <span>Recall</span>
+                <strong>{{ metrics.recall }}</strong>
+            </div>
+
+            <div class="metric-box">
+                <span>IoU</span>
+                <strong>{{ metrics.iou }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MAIN -->
+
+    <div class="main-content">
+
+        <!-- HOME -->
+
+        <div id="home-section">
+
+            <h1>
+                Multiple Sclerosis Lesion Segmentation
+            </h1>
+
+            <p class="subtitle">
+                Multiple Sclerosis Prediction
+            </p>
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                class="upload-form"
+            >
+
+                <div class="drop-zone">
+
+                    <p>
+                        Drag & Drop MRI Image Here
+                    </p>
+
+                    <input
+                        type="file"
+                        name="image"
+                        required
+                    >
+
+                </div>
+
+                <button type="submit">
+                    Predict Lesion
+                </button>
+
+            </form>
+
+            {% if original_image %}
+
+            <div class="results-container">
+
+                <div class="card">
+
+                    <h2>
+                        Original MRI
+                    </h2>
+
+                    <img src="{{ original_image }}">
+
+                </div>
+
+                <div class="card">
+
+                    <h2>
+                        Predicted Mask
+                    </h2>
+
+                    <img src="{{ mask_image }}">
+
+                </div>
+
+                <div class="card">
+
+                    <h2>
+                        Overlay Result
+                    </h2>
+
+                    <img src="{{ overlay_image }}">
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <!-- EVALUATION -->
+
+        <div
+            id="evaluation-section"
+            style="display:none;"
+        >
+
+            <h1>
+                Evaluation of Model
+            </h1>
+
+            <div class="graph-container">
+
+                <div class="graph-card">
+
+                    <h2>
+                        Metrics Bar Graph
+                    </h2>
+
+                    <img src="{{ url_for('static', filename='graphs/metrics_bar_graph.png') }}">
+
+                </div>
+
+                
+
+                <div class="graph-card">
+
+                    <h2>
+                        Dice Score
+                    </h2>
+
+                    <img src="{{ url_for('static', filename='graphs/dice_graph.png') }}">
+
+                </div>
+
+                <div class="graph-card">
+
+                    <h2>
+                        Accuracy
+                    </h2>
+
+                    <img src="{{ url_for('static', filename='graphs/accuracy_graph.png') }}">
+
+                </div>
+
+                <div class="graph-card">
+
+                    <h2>
+                        F1 Score
+                    </h2>
+
+                    <img src="{{ url_for('static', filename='graphs/f1_graph.png') }}">
+
+                </div>
+
+                <div class="graph-card">
+
+                    <h2>
+                        Precision
+                    </h2>
+
+                    <img src="{{ url_for('static', filename='graphs/precision_graph.png') }}">
+
+                </div>
+
+                <div class="graph-card">
+
+                    <h2>
+                        Recall
+                    </h2>
+
+                    <img src="{{ url_for('static', filename='graphs/recall_graph.png') }}">
+
+                </div>
+
+                <div class="graph-card">
+
+                    <h2>
+                        IoU Score
+                    </h2>
+
+                    <img src="{{ url_for('static', filename='graphs/iou_graph.png') }}">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function showSection(section) {
+
+    document.getElementById(
+        "home-section"
+    ).style.display = "none";
+
+    document.getElementById(
+        "evaluation-section"
+    ).style.display = "none";
+
+    if(section === "home") {
+
+        document.getElementById(
+            "home-section"
+        ).style.display = "block";
+    }
+
+    if(section === "evaluation") {
+
+        document.getElementById(
+            "evaluation-section"
+        ).style.display = "block";
+    }
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Model Files
+saved_models/
+*.pth
+*.pt
+
+# Dataset
+processed_dataset/
+bmri_dataet/
+
+# Uploads & Outputs
+static/uploads/*
+static/outputs/*
+
+# Graphs
+static/graphs/*.png
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Build Files
+build/
+dist/
+*.egg-info/
+
+# Environment Variables
+.env
