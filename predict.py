@@ -5,28 +5,41 @@ import numpy as np
 
 from model import AttentionUNet
 
-
 DEVICE = "cpu"
 
-model = AttentionUNet().to(DEVICE)
+model = None
 
-model.load_state_dict(
 
-    torch.load(
-        "saved_models/best_model.pth",
-        map_location=DEVICE
-    )
-)
+def get_model():
 
-model.eval()
+    global model
+
+    if model is None:
+
+        print("Loading model...")
+
+        model = AttentionUNet().to(DEVICE)
+
+        model.load_state_dict(
+            torch.load(
+                "saved_models/best_model.pth",
+                map_location=DEVICE
+            )
+        )
+
+        model.eval()
+
+        print("Model loaded successfully")
+
+    return model
 
 
 def predict_image(image_path):
 
+    model = get_model()
+
     image = cv2.imread(
-
         image_path,
-
         cv2.IMREAD_GRAYSCALE
     )
 
@@ -54,12 +67,9 @@ def predict_image(image_path):
         axis=0
     )
 
-    image = torch.tensor(
-
-        image,
-
-        dtype=torch.float32
-    ).to(DEVICE)
+    image = torch.from_numpy(
+        image
+    ).float().to(DEVICE)
 
     with torch.no_grad():
 
@@ -78,36 +88,24 @@ def predict_image(image_path):
     ).astype(np.uint8)
 
     overlay = cv2.cvtColor(
-
         original,
-
         cv2.COLOR_GRAY2BGR
     )
 
     overlay[binary == 1] = [255, 0, 0]
 
-    # =========================================
-    # SAVE RESULTS
-    # =========================================
-
     original_path = os.path.join(
-
         "static/outputs",
-
         "original.png"
     )
 
     mask_path = os.path.join(
-
         "static/outputs",
-
         "mask.png"
     )
 
     overlay_path = os.path.join(
-
         "static/outputs",
-
         "overlay.png"
     )
 
@@ -127,12 +125,8 @@ def predict_image(image_path):
     )
 
     return (
-
         original_path,
-
         mask_path,
-
         overlay_path,
-
         {}
     )

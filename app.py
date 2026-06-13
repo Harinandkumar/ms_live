@@ -9,11 +9,6 @@ from flask import (
 
 from predict import predict_image
 
-from model_metrics import (
-    get_model_metrics,
-    generate_graphs
-)
-
 app = Flask(__name__)
 
 UPLOAD_FOLDER = "static/uploads"
@@ -33,13 +28,14 @@ os.makedirs(
     exist_ok=True
 )
 
-print("Evaluating model...")
-
-metrics = get_model_metrics()
-
-generate_graphs(metrics)
-
-print("Metrics loaded successfully")
+metrics = {
+    "dice": 0.622,
+    "accuracy": 0.991,
+    "f1": 0.622,
+    "precision": 0.704,
+    "recall": 0.597,
+    "iou": 0.464
+}
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -52,6 +48,7 @@ def index():
     if request.method == "POST":
 
         if "image" not in request.files:
+
             return render_template(
                 "index.html",
                 metrics=metrics
@@ -95,11 +92,9 @@ if __name__ == "__main__":
         os.environ.get("PORT", 5000)
     )
 
-
-
-
     app.run(
         host="0.0.0.0",
         port=port,
         debug=False
     )
+
